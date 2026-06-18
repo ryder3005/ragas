@@ -20,42 +20,42 @@ def context_recall_prompt(question: str, context: str, answer: str) -> str:
     safe_context = json.dumps(context)
     safe_answer = json.dumps(answer)
 
-    return f"""Given a context, and an answer, analyze each sentence in the answer and classify if the sentence can be attributed to the given context or not. Use only 'Yes' (1) or 'No' (0) as a binary classification. Output json with reason.
+    return f"""Dựa trên một ngữ cảnh (context) và một câu trả lời (answer) cho trước, hãy phân tích từng câu trong câu trả lời và phân loại xem câu đó có bắt nguồn hoặc được chứng thực bởi ngữ cảnh đã cho hay không. Sử dụng phân loại nhị phân bằng cách chỉ dùng 'Có' (1) hoặc 'Không' (0). Trả về kết quả đầu ra dạng JSON kèm theo lý do (reason).
 
---------EXAMPLES-----------
-Example 1
+--------VÍ DỤ-----------
+Ví dụ 1
 Input: {{
-    "question": "What can you tell me about Albert Einstein?",
-    "context": "Albert Einstein (14 March 1879 - 18 April 1955) was a German-born theoretical physicist, widely held to be one of the greatest and most influential scientists of all time. Best known for developing the theory of relativity, he also made important contributions to quantum mechanics, and was thus a central figure in the revolutionary reshaping of the scientific understanding of nature that modern physics accomplished in the first decades of the twentieth century. His mass-energy equivalence formula E = mc2, which arises from relativity theory, has been called 'the world's most famous equation'. He received the 1921 Nobel Prize in Physics 'for his services to theoretical physics, and especially for his discovery of the law of the photoelectric effect', a pivotal step in the development of quantum theory. His work is also known for its influence on the philosophy of science. In a 1999 poll of 130 leading physicists worldwide by the British journal Physics World, Einstein was ranked the greatest physicist of all time. His intellectual achievements and originality have made Einstein synonymous with genius.",
-    "answer": "Albert Einstein, born on 14 March 1879, was a German-born theoretical physicist, widely held to be one of the greatest and most influential scientists of all time. He received the 1921 Nobel Prize in Physics for his services to theoretical physics. He published 4 papers in 1905. Einstein moved to Switzerland in 1895."
+    "question": "Bạn có thể cho tôi biết gì về Albert Einstein?",
+    "context": "Albert Einstein (14 tháng 3 năm 1879 - 18 tháng 4 năm 1955) là một nhà vật lý lý thuyết sinh ra ở Đức, được công nhận rộng rãi là một trong những nhà khoa học vĩ đại và có ảnh hưởng nhất mọi thời đại. Nổi tiếng nhất với việc phát triển thuyết tương đối, ông cũng có những đóng góp quan trọng cho cơ học lượng tử, và do đó là một nhân vật trung tâm trong việc định hình lại mang tính cách mạng về sự hiểu biết khoa học đối với tự nhiên mà vật lý hiện đại đã đạt được trong những thập kỷ đầu của thế kỷ hai mươi. Công thức tương đương khối lượng-năng lượng E = mc2 của ông, bắt nguồn từ thuyết tương đối, đã được gọi là 'phương trình nổi tiếng nhất thế giới'. Ông đã nhận giải Nobel Vật lý năm 1921 'vì những cống hiến của ông cho vật lý lý thuyết, và đặc biệt là vì sự khám phá ra định luật hiệu ứng quang điện', một bước đi then chốt trong sự phát triển của lý thuyết lượng tử. Công trình của ông cũng được biết đến với tầm ảnh hưởng đối với triết học khoa học. Trong một cuộc khảo sát năm 1999 đối với 130 nhà vật lý hàng đầu thế giới của tạp chí Physics World thuộc Anh, Einstein được xếp hạng là nhà vật lý vĩ đại nhất mọi thời đại. Những thành tựu trí tuệ và sự độc đáo của ông đã khiến Einstein trở nên đồng nghĩa với từ thiên tài.",
+    "answer": "Albert Einstein, sinh ngày 14 tháng 3 năm 1879, là một nhà vật lý lý thuyết sinh ra ở Đức, được công nhận rộng rãi là một trong những nhà khoa học vĩ đại và có ảnh hưởng nhất mọi thời đại. Ông nhận giải Nobel Vật lý năm 1921 cho những cống hiến của mình đối với vật lý lý thuyết. Ông đã xuất bản 4 bài báo vào năm 1905. Einstein chuyển đến Thụy Sĩ vào năm 1895."
 }}
 Output: {{
     "classifications": [
         {{
-            "statement": "Albert Einstein, born on 14 March 1879, was a German-born theoretical physicist, widely held to be one of the greatest and most influential scientists of all time.",
-            "reason": "The date of birth of Einstein is mentioned clearly in the context.",
+            "statement": "Albert Einstein, sinh ngày 14 tháng 3 năm 1879, là một nhà vật lý lý thuyết sinh ra ở Đức, được công nhận rộng rãi là một trong những nhà khoa học vĩ đại và có ảnh hưởng nhất mọi thời đại.",
+            "reason": "Ngày sinh của Einstein được đề cập rất rõ ràng và chính xác trong ngữ cảnh.",
             "attributed": 1
         }},
         {{
-            "statement": "He received the 1921 Nobel Prize in Physics for his services to theoretical physics.",
-            "reason": "The exact sentence is present in the given context.",
+            "statement": "Ông nhận giải Nobel Vật lý năm 1921 cho những cống hiến của mình đối với vật lý lý thuyết.",
+            "reason": "Câu này xuất hiện chính xác và đồng nhất với nội dung trong ngữ cảnh được cung cấp.",
             "attributed": 1
         }},
         {{
-            "statement": "He published 4 papers in 1905.",
-            "reason": "There is no mention about papers he wrote in the given context.",
+            "statement": "Ông đã xuất bản 4 bài báo vào năm 1905.",
+            "reason": "Hoàn toàn không có thông tin nào nhắc về các bài báo ông đã viết trong ngữ cảnh đã cho.",
             "attributed": 0
         }},
         {{
-            "statement": "Einstein moved to Switzerland in 1895.",
-            "reason": "There is no supporting evidence for this in the given context.",
+            "statement": "Einstein chuyển đến Thụy Sĩ vào năm 1895.",
+            "reason": "Không có bất kỳ bằng chứng hỗ trợ nào cho thông tin này trong ngữ cảnh được cung cấp.",
             "attributed": 0
         }}
     ]
 }}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 Input: {{
     "question": {safe_question},
     "context": {safe_context},

@@ -16,29 +16,29 @@ def answer_relevancy_prompt(response: str) -> str:
     # Use json.dumps() to safely escape the response string
     safe_response = json.dumps(response)
 
-    return f"""Generate a question for the given answer and Identify if answer is noncommittal. Give noncommittal as 1 if the answer is noncommittal and 0 if the answer is committal. A noncommittal answer is one that is evasive, vague, or ambiguous. For example, "I don't know" or "I'm not sure" are noncommittal answers
+    return f"""Hãy tạo một câu hỏi phù hợp cho câu trả lời được cung cấp và Xác định xem câu trả lời đó có phải là dạng 'không cam kết' (noncommittal) hay không. Gán giá trị 'noncommittal' là 1 nếu câu trả lời thuộc dạng không cam kết, và 0 nếu câu trả lời có tính cam kết (rõ ràng). Một câu trả lời không cam kết là câu trả lời mang tính lảng tránh, mơ hồ hoặc không rõ ràng. Ví dụ, các câu như "Tôi không biết" hoặc "Tôi không chắc chắn" là những câu trả lời không cam kết.
 
---------EXAMPLES-----------
-Example 1
+--------VÍ DỤ-----------
+Ví dụ 1
 Input: {{
-    "response": "Albert Einstein was born in Germany."
+    "response": "Albert Einstein sinh ra tại Đức."
 }}
 Output: {{
-    "question": "Where was Albert Einstein born?",
+    "question": "Albert Einstein sinh ra ở đâu?",
     "noncommittal": 0
 }}
 
-Example 2
+Ví dụ 2
 Input: {{
-    "response": "I don't know about the  groundbreaking feature of the smartphone invented in 2023 as am unaware of information beyond 2022. "
+    "response": "Tôi không biết về tính năng đột phá của chiếc điện thoại thông minh được phát minh vào năm 2023 vì tôi không có thông tin sau năm 2022."
 }}
 Output: {{
-    "question": "What was the groundbreaking feature of the smartphone invented in 2023?",
+    "question": "Tính năng đột phá của chiếc điện thoại thông minh được phát minh vào năm 2023 là gì?",
     "noncommittal": 1
 }}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {{
     "response": {safe_response}
 }}

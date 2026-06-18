@@ -14,66 +14,66 @@ def extract_entities_prompt(text: str) -> str:
 
     safe_text = json.dumps(text)
 
-    return f"""Given a text, extract unique entities without repetition. Ensure you consider different forms or mentions of the same entity as a single entity.
-Please return the output in a JSON format that complies with the following schema as specified in JSON Schema:
-{{"properties": {{"entities": {{"items": {{"type": "string"}}, "title": "Entities", "type": "array"}}}}, "required": ["entities"], "title": "EntitiesList", "type": "object"}}Do not use single quotes in your response but double quotes,properly escaped with a backslash.
---------EXAMPLES-----------
-Example 1
+    return f"""Cho một đoạn văn bản, hãy trích xuất các thực thể duy nhất (unique entities) mà không trùng lặp. Đảm bảo rằng bạn coi các dạng thức khác nhau hoặc các cách nhắc đến khác nhau của cùng một thực thể là một thực thể duy nhất.
+Vui lòng trả về kết quả dưới dạng định dạng JSON tuân thủ chính xác theo cấu trúc (schema) được chỉ định trong JSON Schema sau:
+{{"properties": {{"entities": {{"items": {{"type": "string"}}, "title": "Entities", "type": "array"}}}}, "required": ["entities"], "title": "EntitiesList", "type": "object"}}Không sử dụng dấu nháy đơn trong phản hồi của bạn, thay vào đó hãy sử dụng dấu nháy kép và được escape đúng cách bằng dấu gạch chéo ngược (\\").
+--------VÍ DỤ-----------
+Ví dụ 1
 Input: {{
-    "text": "The Eiffel Tower, located in Paris, France, is one of the most iconic landmarks globally. Millions of visitors are attracted to it each year for its breathtaking views of the city. Completed in 1889, it was constructed in time for the 1889 World's Fair."
+    "text": "Tháp Eiffel, tọa lạc tại Paris, Pháp, là một trong những địa danh mang tính biểu tượng nhất trên toàn cầu. Hàng triệu du khách bị thu hút đến đây mỗi năm vì tầm nhìn ngoạn mục ra thành phố. Hoàn thành vào năm 1889, công trình được xây dựng kịp thời cho Hội chợ Thế giới năm 1889."
 }}
 Output: {{
     "entities": [
-        "Eiffel Tower",
+        "Tháp Eiffel",
         "Paris",
-        "France",
+        "Pháp",
         "1889",
-        "World's Fair"
+        "Hội chợ Thế giới"
     ]
 }}
-Example 2
+Ví dụ 2
 Input: {{
-    "text": "The Colosseum in Rome, also known as the Flavian Amphitheatre, stands as a monument to Roman architectural and engineering achievement. Construction began under Emperor Vespasian in AD 70 and was completed by his son Titus in AD 80. It could hold between 50,000 and 80,000 spectators who watched gladiatorial contests and public spectacles."
+    "text": "Đấu trường La Mã ở Rome, còn được gọi là Nhà hát lớn Flavian, là một đài tượng niệm cho thành tựu kỹ thuật và kiến trúc của La Mã. Việc xây dựng bắt đầu dưới thời Hoàng đế Vespasian vào năm 70 sau Công nguyên và được hoàn thành bởi con trai ông là Titus vào năm 80 sau Công nguyên. Nơi đây có thể chứa từ 50.000 đến 80.000 khán giả đến xem các trận đấu sĩ và các buổi trình diễn công cộng."
 }}
 Output: {{
     "entities": [
-        "Colosseum",
+        "Đấu trường La Mã",
         "Rome",
-        "Flavian Amphitheatre",
+        "Nhà hát lớn Flavian",
         "Vespasian",
-        "AD 70",
+        "năm 70 sau Công nguyên",
         "Titus",
-        "AD 80"
+        "năm 80 sau Công nguyên"
     ]
 }}
-Example 3
+Ví dụ 3
 Input: {{
-    "text": "The Great Wall of China, stretching over 21,196 kilometers from east to west, is a marvel of ancient defensive architecture. Built to protect against invasions from the north, its construction started as early as the 7th century BC. Today, it is a UNESCO World Heritage Site and a major tourist attraction."
+    "text": "Vạn Lý Trường Thành của Trung Quốc, trải dài hơn 21.196 km từ đông sang tây, là một kỳ quan của kiến trúc phòng thủ cổ đại. Được xây dựng để bảo vệ chống lại các cuộc xâm lược từ phương bắc, việc xây dựng công trình đã bắt đầu từ thế kỷ thứ 7 trước Công nguyên. Ngày nay, nơi đây là Di sản Thế giới được UNESCO công nhận và là một điểm thu hút khách du lịch lớn."
 }}
 Output: {{
     "entities": [
-        "Great Wall of China",
-        "21,196 kilometers",
-        "7th century BC",
-        "UNESCO World Heritage Site"
+        "Vạn Lý Trường Thành",
+        "21.196 km",
+        "thế kỷ thứ 7 trước Công nguyên",
+        "Di sản Thế giới được UNESCO công nhận"
     ]
 }}
-Example 4
+Ví dụ 4
 Input: {{
-    "text": "The Apollo 11 mission, which launched on July 16, 1969, marked the first time humans landed on the Moon. Astronauts Neil Armstrong, Buzz Aldrin, and Michael Collins made history, with Armstrong being the first man to step on the lunar surface. This event was a significant milestone in space exploration."
+    "text": "Sứ mệnh Apollo 11, được phóng vào ngày 16 tháng 7 năm 1969, đã đánh dấu lần đầu tiên con người đặt chân lên Mặt Trăng. Các phi hành gia Neil Armstrong, Buzz Aldrin và Michael Collins đã làm nên lịch sử, trong đó Armstrong là người đầu tiên bước đi trên bề mặt mặt trăng. Sự kiện này là một cột mốc quan trọng trong quá trình khám phá không gian."
 }}
 Output: {{
     "entities": [
-        "Apollo 11 mission",
-        "July 16, 1969",
-        "Moon",
+        "Sứ mệnh Apollo 11",
+        "ngày 16 tháng 7 năm 1969",
+        "Mặt Trăng",
         "Neil Armstrong",
         "Buzz Aldrin",
         "Michael Collins"
     ]
 }}
 -----------------------------
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {{
     "text": {safe_text}
 }}

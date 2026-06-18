@@ -19,65 +19,65 @@ def nli_statement_prompt(context: str, statements: t.List[str]) -> str:
     safe_context = json.dumps(context)
     safe_statements = json.dumps(statements, indent=4).replace("\n", "\n    ")
 
-    return f"""Your task is to judge the faithfulness of a series of statements based on a given context. For each statement you must return verdict as 1 if the statement can be directly inferred based on the context or 0 if the statement can not be directly inferred based on the context.
-Please return the output in a JSON format that complies with the following schema as specified in JSON Schema:
-{{"$defs": {{"StatementFaithfulnessAnswer": {{"properties": {{"statement": {{"description": "the original statement, word-by-word", "title": "Statement", "type": "string"}}, "reason": {{"description": "the reason of the verdict", "title": "Reason", "type": "string"}}, "verdict": {{"description": "the verdict(0/1) of the faithfulness.", "title": "Verdict", "type": "integer"}}}}, "required": ["statement", "reason", "verdict"], "title": "StatementFaithfulnessAnswer", "type": "object"}}}}, "properties": {{"statements": {{"items": {{"$ref": "#/$defs/StatementFaithfulnessAnswer"}}, "title": "Statements", "type": "array"}}}}, "required": ["statements"], "title": "NLIStatementOutput", "type": "object"}}Do not use single quotes in your response but double quotes,properly escaped with a backslash.
+    return f"""Nhiệm vụ của bạn là đánh giá tính trung thực (faithfulness) của một chuỗi các luận điểm dựa trên một ngữ cảnh (context) cho trước. Đối với mỗi luận điểm, bạn phải trả về phán quyết (verdict) là 1 nếu luận điểm đó có thể được suy ra trực tiếp từ ngữ cảnh, hoặc 0 nếu luận điểm đó không thể suy ra trực tiếp từ ngữ cảnh.
+Vui lòng trả về kết quả dưới dạng định dạng JSON tuân thủ chính xác theo cấu trúc (schema) được chỉ định trong JSON Schema sau:
+{{"$defs": {{"StatementFaithfulnessAnswer": {{"properties": {{"statement": {{"description": "the original statement, word-by-word", "title": "Statement", "type": "string"}}, "reason": {{"description": "the reason of the verdict", "title": "Reason", "type": "string"}}, "verdict": {{"description": "the verdict(0/1) of the faithfulness.", "title": "Verdict", "type": "integer"}}}}, "required": ["statement", "reason", "verdict"], "title": "StatementFaithfulnessAnswer", "type": "object"}}}}, "properties": {{"statements": {{"items": {{"$ref": "#/$defs/StatementFaithfulnessAnswer"}}, "title": "Statements", "type": "array"}}}}, "required": ["statements"], "title": "NLIStatementOutput", "type": "object"}}Không sử dụng dấu nháy đơn trong phản hồi của bạn, thay vào đó hãy sử dụng dấu nháy kép và được escape đúng cách bằng dấu gạch chéo ngược (\\").
 
---------EXAMPLES-----------
-Example 1
+--------VÍ DỤ-----------
+Ví dụ 1
 Input: {{
-    "context": "John is a student at XYZ University. He is pursuing a degree in Computer Science. He is enrolled in several courses this semester, including Data Structures, Algorithms, and Database Management. John is a diligent student and spends a significant amount of time studying and completing assignments. He often stays late in the library to work on his projects.",
+    "context": "John là sinh viên trường Đại học XYZ. Anh ấy đang theo học ngành Khoa học Máy tính. Học kỳ này anh ấy đăng ký một số môn học, bao gồm Cấu trúc dữ liệu, Giải thuật và Quản trị Cơ sở Dữ liệu. John là một sinh viên siêng năng, anh dành phần lớn thời gian để học và hoàn thành bài tập. Anh cũng thường xuyên ở lại thư viện muộn để làm các dự án của mình.",
     "statements": [
-        "John is majoring in Biology.",
-        "John is taking a course on Artificial Intelligence.",
-        "John is a dedicated student.",
-        "John has a part-time job."
+        "John đang học chuyên ngành Sinh học.",
+        "John đang học một khóa học về Trí tuệ Nhân tạo.",
+        "John là một sinh viên tận tụy.",
+        "John có một công việc bán thời gian."
     ]
 }}
 Output: {{
     "statements": [
         {{
-            "statement": "John is majoring in Biology.",
-            "reason": "John's major is explicitly mentioned as Computer Science. There is no information suggesting he is majoring in Biology.",
+            "statement": "John đang học chuyên ngành Sinh học.",
+            "reason": "Chuyên ngành của John được nêu rõ ràng trong ngữ cảnh là Khoa học Máy tính. Không có thông tin nào cho thấy anh ấy đang học chuyên ngành Sinh học.",
             "verdict": 0
         }},
         {{
-            "statement": "John is taking a course on Artificial Intelligence.",
-            "reason": "The context mentions the courses John is currently enrolled in, and Artificial Intelligence is not mentioned. Therefore, it cannot be deduced that John is taking a course on AI.",
+            "statement": "John đang học một khóa học về Trí tuệ Nhân tạo.",
+            "reason": "Ngữ cảnh đề cập đến các môn học John hiện đang học, và môn Trí tuệ Nhân tạo không có tên trong đó. Do đó, không thể suy luận rằng John đang học một khóa học về AI.",
             "verdict": 0
         }},
         {{
-            "statement": "John is a dedicated student.",
-            "reason": "The context states that he spends a significant amount of time studying and completing assignments. Additionally, it mentions that he often stays late in the library to work on his projects, which implies dedication.",
+            "statement": "John là một sinh viên tận tụy.",
+            "reason": "Ngữ cảnh khẳng định anh ấy dành phần lớn thời gian để học và hoàn thành bài tập. Thêm vào đó, việc anh ấy thường xuyên ở lại thư viện muộn để làm các dự án cũng biểu thị sự tận tụy.",
             "verdict": 1
         }},
         {{
-            "statement": "John has a part-time job.",
-            "reason": "There is no information given in the context about John having a part-time job.",
+            "statement": "John có một công việc bán thời gian.",
+            "reason": "Không có bất kỳ thông tin nào được đưa ra trong ngữ cảnh về việc John có một công việc bán thời gian.",
             "verdict": 0
         }}
     ]
 }}
 
-Example 2
+Ví dụ 2
 Input: {{
-    "context": "Photosynthesis is a process used by plants, algae, and certain bacteria to convert light energy into chemical energy.",
+    "context": "Quang hợp là một quá trình được sử dụng bởi thực vật, tảo và một số vi khuẩn để chuyển đổi năng lượng ánh sáng thành năng lượng hóa học.",
     "statements": [
-        "Albert Einstein was a genius."
+        "Albert Einstein là một thiên tài."
     ]
 }}
 Output: {{
     "statements": [
         {{
-            "statement": "Albert Einstein was a genius.",
-            "reason": "The context and statement are unrelated",
+            "statement": "Albert Einstein là một thiên tài.",
+            "reason": "Ngữ cảnh và luận điểm hoàn toàn không liên quan đến nhau.",
             "verdict": 0
         }}
     ]
 }}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {{
     "context": {safe_context},
     "statements": {safe_statements}

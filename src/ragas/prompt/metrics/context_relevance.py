@@ -17,26 +17,26 @@ def context_relevance_judge1_prompt(query: str, context: str) -> str:
     safe_query = json.dumps(query)
     safe_context = json.dumps(context)
 
-    return f"""### Instructions
+    return f"""### Chỉ dẫn
 
-You are a world class expert designed to evaluate the relevance score of a Context in order to answer the Question.
-Your task is to determine if the Context contains proper information to answer the Question.
-Do not rely on your previous knowledge about the Question.
-Use only what is written in the Context and in the Question.
-Follow the instructions below:
-0. If the context does not contains any relevant information to answer the question, say 0.
-1. If the context partially contains relevant information to answer the question, say 1.
-2. If the context contains any relevant information to answer the question, say 2.
-You must provide the relevance score of 0, 1, or 2, nothing else.
-Do not explain.
-Return your response as JSON in this format: {{"rating": X}} where X is 0, 1, or 2.
+Bạn là một chuyên gia đẳng cấp thế giới được thiết kế để đánh giá điểm số mức độ liên quan của Ngữ cảnh (Context) nhằm trả lời Câu hỏi (Question).
+Nhiệm vụ của bạn là xác định xem Ngữ cảnh có chứa thông tin phù hợp để trả về câu trả lời cho Câu hỏi hay không.
+Không dựa vào kiến thức có sẵn trước đây của bạn về Câu hỏi.
+Chỉ sử dụng những gì được viết trong Ngữ cảnh và trong Câu hỏi.
+Tuân thủ các chỉ dẫn dưới đây:
+0. Nếu ngữ cảnh không chứa bất kỳ thông tin liên quan nào để trả lời câu hỏi, hãy trả về 0.
+1. Nếu ngữ cảnh chứa một phần thông tin liên quan để trả lời câu hỏi, hãy trả về 1.
+2. Nếu ngữ cảnh chứa thông tin hoàn toàn liên quan để trả lời câu hỏi, hãy trả về 2.
+Bạn bắt buộc phải đưa ra điểm số mức độ liên quan là 0, 1 hoặc 2, không thêm gì khác.
+Tuyệt đối không giải thích.
+Trả về phản hồi của bạn dưới dạng JSON theo định dạng sau: {{"rating": X}} với X là 0, 1, hoặc 2.
 
-### Question: {safe_query}
+### Câu hỏi: {safe_query}
 
-### Context: {safe_context}
+### Ngữ cảnh: {safe_context}
 
-Do not try to explain.
-Analyzing Context and Question, the Relevance score is """
+Không cố gắng giải thích.
+Phân tích Ngữ cảnh và Câu hỏi, điểm số Mức độ liên quan là """
 
 
 def context_relevance_judge2_prompt(query: str, context: str) -> str:
@@ -53,17 +53,17 @@ def context_relevance_judge2_prompt(query: str, context: str) -> str:
     safe_query = json.dumps(query)
     safe_context = json.dumps(context)
 
-    return f"""As a specially designed expert to assess the relevance score of a given Context in relation to a Question, my task is to determine the extent to which the Context provides information necessary to answer the Question. I will rely solely on the information provided in the Context and Question, and not on any prior knowledge.
+    return f"""Với tư cách là một chuyên gia được thiết kế đặc biệt để đánh giá điểm số mức độ liên quan của một Ngữ cảnh đối với một Câu hỏi cho trước, nhiệm vụ của tôi là xác định mức độ mà Ngữ cảnh cung cấp thông tin cần thiết để trả lời Câu hỏi. Tôi sẽ chỉ dựa vào thông tin được cung cấp trong Ngữ cảnh và Câu hỏi, chứ không dựa vào bất kỳ kiến thức nào có từ trước.
 
-Here are the instructions I will follow:
-* If the Context does not contain any relevant information to answer the Question, I will respond with a relevance score of 0.
-* If the Context partially contains relevant information to answer the Question, I will respond with a relevance score of 1.
-* If the Context contains any relevant information to answer the Question, I will respond with a relevance score of 2.
-Return your response as JSON in this format: {{"rating": X}} where X is 0, 1, or 2.
+Dưới đây là các chỉ dẫn tôi sẽ tuân theo:
+* Nếu Ngữ cảnh không chứa bất kỳ thông tin liên quan nào để trả lời Câu hỏi, tôi sẽ phản hồi với điểm số mức độ liên quan là 0.
+* Nếu Ngữ cảnh chứa một phần thông tin liên quan để trả lời Câu hỏi, tôi sẽ phản hồi với điểm số mức độ liên quan là 1.
+* Nếu Ngữ cảnh chứa thông tin hoàn toàn liên quan để trả lời Câu hỏi, tôi sẽ phản hồi với điểm số mức độ liên quan là 2.
+Trả về phản hồi của bạn dưới dạng JSON theo định dạng sau: {{"rating": X}} với X là 0, 1, hoặc 2.
 
-### Question: {safe_query}
+### Câu hỏi: {safe_query}
 
-### Context: {safe_context}
+### Ngữ cảnh: {safe_context}
 
-Do not try to explain.
-Based on the provided Question and Context, the Relevance score is  ["""
+Không cố gắng giải thích.
+Dựa trên Câu hỏi và Ngữ cảnh được cung cấp, điểm số Mức độ liên quan là ["""

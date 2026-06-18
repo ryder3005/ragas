@@ -113,7 +113,7 @@ class Prompt:
                 has_examples=len(self.examples) > 0 if self.examples else False,
                 num_examples=len(self.examples) if self.examples else 0,
                 has_response_model=self.response_model is not None,
-                language="english",  # Simple prompt doesn't have language detection
+                language="Vietnamese",  # Simple prompt doesn't have language detection
             )
         )
 

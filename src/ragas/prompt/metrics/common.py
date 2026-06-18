@@ -19,27 +19,27 @@ def statement_generator_prompt(question: str, answer: str) -> str:
     safe_question = json.dumps(question)
     safe_answer = json.dumps(answer)
 
-    return f"""Given a question and an answer, analyze the complexity of each sentence in the answer. Break down each sentence into one or more fully understandable statements. Ensure that no pronouns are used in any statement. Format the outputs in JSON.
-Please return the output in a JSON format that complies with the following schema as specified in JSON Schema:
-{{"properties": {{"statements": {{"description": "The generated statements", "items": {{"type": "string"}}, "title": "Statements", "type": "array"}}}}, "required": ["statements"], "title": "StatementGeneratorOutput", "type": "object"}}Do not use single quotes in your response but double quotes,properly escaped with a backslash.
+    return f"""Cho một câu hỏi và một câu trả lời, hãy phân tích độ phức tạp của từng câu trong câu trả lời. Hãy tách nhỏ từng câu thành một hoặc nhiều luận điểm (statements) độc lập và hoàn chỉnh để ai cũng có thể hiểu được một cách trực tiếp. Đảm bảo rằng KHÔNG sử dụng đại từ thay thế (như anh ấy, cô ấy, nó, họ,...) trong bất kỳ luận điểm nào. Định dạng kết quả đầu ra bằng JSON.
+Vui lòng trả về kết quả dưới dạng định dạng JSON tuân thủ chính xác theo cấu trúc (schema) được chỉ định trong JSON Schema sau:
+{{"properties": {{"statements": {{"description": "The generated statements", "items": {{"type": "string"}}, "title": "Statements", "type": "array"}}}}, "required": ["statements"], "title": "StatementGeneratorOutput", "type": "object"}}Không sử dụng dấu nháy đơn trong phản hồi của bạn, thay vào đó hãy sử dụng dấu nháy kép và được escape đúng cách bằng dấu gạch chéo ngược (\\").
 
---------EXAMPLES-----------
-Example 1
+--------VÍ DỤ-----------
+Ví dụ 1
 Input: {{
-    "question": "Who was Albert Einstein and what is he best known for?",
-    "answer": "He was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time. He was best known for developing the theory of relativity, he also made important contributions to the development of the theory of quantum mechanics."
+    "question": "Albert Einstein là ai và ông nổi tiếng nhất về điều gì?",
+    "answer": "Ông là một nhà vật lý lý thuyết sinh ra ở Đức, được công nhận rộng rãi là một trong những nhà vật lý vĩ đại và có ảnh hưởng nhất mọi thời đại. Ông nổi tiếng nhất với việc phát triển thuyết tương đối, ngoài ra ông cũng có những đóng góp quan chất cho sự phát triển của lý thuyết cơ học lượng tử."
 }}
 Output: {{
     "statements": [
-        "Albert Einstein was a German-born theoretical physicist.",
-        "Albert Einstein is recognized as one of the greatest and most influential physicists of all time.",
-        "Albert Einstein was best known for developing the theory of relativity.",
-        "Albert Einstein made important contributions to the development of the theory of quantum mechanics."
+        "Albert Einstein là một nhà vật lý lý thuyết sinh ra ở Đức.",
+        "Albert Einstein được công nhận là một trong những nhà vật lý vĩ đại và có ảnh hưởng nhất mọi thời đại.",
+        "Albert Einstein nổi tiếng nhất với việc phát triển thuyết tương đối.",
+        "Albert Einstein đã có những đóng góp quan trọng cho sự phát triển của lý thuyết cơ học lượng tử."
     ]
 }}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {{
     "question": {safe_question},
     "answer": {safe_answer}
@@ -62,48 +62,48 @@ def nli_statement_prompt(context: str, statements: t.List[str]) -> str:
     safe_context = json.dumps(context)
     safe_statements = json.dumps(statements, indent=4).replace("\n", "\n    ")
 
-    return f"""Your task is to judge the faithfulness of a series of statements based on a given context. For each statement you must return verdict as 1 if the statement can be directly inferred based on the context or 0 if the statement can not be directly inferred based on the context.
-Please return the output in a JSON format that complies with the following schema as specified in JSON Schema:
-{{"$defs": {{"StatementFaithfulnessAnswer": {{"properties": {{"statement": {{"description": "the original statement, word-by-word", "title": "Statement", "type": "string"}}, "reason": {{"description": "the reason of the verdict", "title": "Reason", "type": "string"}}, "verdict": {{"description": "the verdict(0/1) of the faithfulness.", "title": "Verdict", "type": "integer"}}}}, "required": ["statement", "reason", "verdict"], "title": "StatementFaithfulnessAnswer", "type": "object"}}}}, "properties": {{"statements": {{"items": {{"$ref": "#/$defs/StatementFaithfulnessAnswer"}}, "title": "Statements", "type": "array"}}}}, "required": ["statements"], "title": "NLIStatementOutput", "type": "object"}}Do not use single quotes in your response but double quotes,properly escaped with a backslash.
+    return f"""Nhiệm vụ của bạn là đánh giá tính trung thực (faithfulness) của một chuỗi các luận điểm dựa trên một ngữ cảnh (context) cho trước. Đối với mỗi luận điểm, bạn phải trả về phán quyết (verdict) là 1 nếu luận điểm đó có thể được suy ra trực tiếp từ ngữ cảnh, hoặc 0 nếu luận điểm đó không thể suy ra trực tiếp từ ngữ cảnh.
+Vui lòng trả về kết quả dưới dạng định dạng JSON tuân thủ chính xác theo cấu trúc (schema) được chỉ định trong JSON Schema sau:
+{{"$defs": {{"StatementFaithfulnessAnswer": {{"properties": {{"statement": {{"description": "the original statement, word-by-word", "title": "Statement", "type": "string"}}, "reason": {{"description": "the reason of the verdict", "title": "Reason", "type": "string"}}, "verdict": {{"description": "the verdict(0/1) of the faithfulness.", "title": "Verdict", "type": "integer"}}}}, "required": ["statement", "reason", "verdict"], "title": "StatementFaithfulnessAnswer", "type": "object"}}}}, "properties": {{"statements": {{"items": {{"$ref": "#/$defs/StatementFaithfulnessAnswer"}}, "title": "Statements", "type": "array"}}}}, "required": ["statements"], "title": "NLIStatementOutput", "type": "object"}}Không sử dụng dấu nháy đơn trong phản hồi của bạn, thay vào đó hãy sử dụng dấu nháy kép và được escape đúng cách bằng dấu gạch chéo ngược (\\").
 
---------EXAMPLES-----------
-Example 1
+--------VÍ DỤ-----------
+Ví dụ 1
 Input: {{
-    "context": "John is a student at XYZ University. He is pursuing a degree in Computer Science. He is enrolled in several courses this semester, including Data Structures, Algorithms, and Database Management. John is a diligent student and spends a significant amount of time studying and completing assignments. He often stays late in the library to work on his projects.",
+    "context": "John là sinh viên trường Đại học XYZ. Anh ấy đang theo học ngành Khoa học Máy tính. Học kỳ này anh ấy đăng ký một số môn học, bao gồm Cấu trúc dữ liệu, Giải thuật và Quản trị Cơ sở Dữ liệu. John là một sinh viên siêng năng, anh dành phần lớn thời gian để học và hoàn thành bài tập. Anh cũng thường xuyên ở lại thư viện muộn để làm các dự án của mình.",
     "statements": [
-        "John is majoring in Biology.",
-        "John is taking a course on Artificial Intelligence.",
-        "John is a dedicated student.",
-        "John has a part-time job."
+        "John đang học chuyên ngành Sinh học.",
+        "John đang học một khóa học về Trí tuệ Nhân tạo.",
+        "John là một sinh viên tận tụy.",
+        "John có một công việc bán thời gian."
     ]
 }}
 Output: {{
     "statements": [
         {{
-            "statement": "John is majoring in Biology.",
-            "reason": "John's major is explicitly stated as Computer Science, not Biology.",
+            "statement": "John đang học chuyên ngành Sinh học.",
+            "reason": "Chuyên ngành của John được nêu rõ ràng trong ngữ cảnh là Khoa học Máy tính, không phải Sinh học.",
             "verdict": 0
         }},
         {{
-            "statement": "John is taking a course on Artificial Intelligence.",
-            "reason": "The context mentions courses in Data Structures, Algorithms, and Database Management, but does not mention Artificial Intelligence.",
+            "statement": "John đang học một khóa học về Trí tuệ Nhân tạo.",
+            "reason": "Ngữ cảnh chỉ đề cập đến các môn Cấu trúc dữ liệu, Giải thuật và Quản trị Cơ sở Dữ liệu, hoàn toàn không nhắc tới môn Trí tuệ Nhân tạo.",
             "verdict": 0
         }},
         {{
-            "statement": "John is a dedicated student.",
-            "reason": "The context states that John is a diligent student who spends a significant amount of time studying and completing assignments.",
+            "statement": "John là một sinh viên tận tụy.",
+            "reason": "Ngữ cảnh khẳng định John là một sinh viên siêng năng, người dành một lượng lớn thời gian để học tập và hoàn thành các bài tập.",
             "verdict": 1
         }},
         {{
-            "statement": "John has a part-time job.",
-            "reason": "There is no information in the context about John having a part-time job.",
+            "statement": "John có một công việc bán thời gian.",
+            "reason": "Không có thông tin nào trong ngữ cảnh cho biết John có công việc bán thời gian.",
             "verdict": 0
         }}
     ]
 }}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {{
     "context": {safe_context},
     "statements": {safe_statements}

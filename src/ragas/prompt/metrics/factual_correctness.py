@@ -24,20 +24,20 @@ def claim_decomposition_prompt(
         examples = [
             {
                 "input": {
-                    "response": "Charles Babbage was a French mathematician, philosopher, and food critic."
+                    "response": "Charles Babbage là một nhà toán học, nhà triết học và nhà phê bình ẩm thực người Pháp."
                 },
                 "output": {
-                    "claims": ["Charles Babbage was a mathematician and philosopher."]
+                    "claims": ["Charles Babbage là một nhà toán học và nhà triết học."]
                 },
             },
             {
                 "input": {
-                    "response": "Albert Einstein was a German theoretical physicist. He developed the theory of relativity and also contributed to the development of quantum mechanics."
+                    "response": "Albert Einstein là một nhà vật lý lý thuyết người Đức. Ông đã phát triển thuyết tương đối và cũng đóng góp vào sự phát triển của cơ học lượng tử."
                 },
                 "output": {
                     "claims": [
-                        "Albert Einstein was a German physicist.",
-                        "Albert Einstein developed relativity and contributed to quantum mechanics.",
+                        "Albert Einstein là một nhà vật lý người Đức.",
+                        "Albert Einstein đã phát triển thuyết tương đối và đóng góp vào cơ học lượng tử.",
                     ]
                 },
             },
@@ -46,22 +46,22 @@ def claim_decomposition_prompt(
         examples = [
             {
                 "input": {
-                    "response": "Charles Babbage was a French mathematician, philosopher, and food critic."
+                    "response": "Charles Babbage là một nhà toán học, nhà triết học và nhà phê bình ẩm thực người Pháp."
                 },
                 "output": {
                     "claims": [
-                        "Charles Babbage was a French mathematician, philosopher, and food critic."
+                        "Charles Babbage là một nhà toán học, nhà triết học và nhà phê bình ẩm thực người Pháp."
                     ]
                 },
             },
             {
                 "input": {
-                    "response": "Albert Einstein was a German theoretical physicist. He developed the theory of relativity and also contributed to the development of quantum mechanics."
+                    "response": "Albert Einstein là một nhà vật lý lý thuyết người Đức. Ông đã phát triển thuyết tương đối và cũng đóng góp vào sự phát triển của cơ học lượng tử."
                 },
                 "output": {
                     "claims": [
-                        "Albert Einstein was a German theoretical physicist.",
-                        "Albert Einstein developed the theory of relativity and also contributed to the development of quantum mechanics.",
+                        "Albert Einstein là một nhà vật lý lý thuyết người Đức.",
+                        "Albert Einstein đã phát triển thuyết tương đối và cũng đóng góp vào sự phát triển của cơ học lượng tử.",
                     ]
                 },
             },
@@ -70,23 +70,23 @@ def claim_decomposition_prompt(
         examples = [
             {
                 "input": {
-                    "response": "Charles Babbage was a French mathematician, philosopher, and food critic."
+                    "response": "Charles Babbage là một nhà toán học, nhà triết học và nhà phê bình ẩm thực người Pháp."
                 },
                 "output": {
                     "claims": [
-                        "Charles Babbage was a mathematician.",
-                        "Charles Babbage was a philosopher.",
+                        "Charles Babbage là một nhà toán học.",
+                        "Charles Babbage là một nhà triết học.",
                     ]
                 },
             },
             {
                 "input": {
-                    "response": "Albert Einstein was a German theoretical physicist. He developed the theory of relativity and also contributed to the development of quantum mechanics."
+                    "response": "Albert Einstein là một nhà vật lý lý thuyết người Đức. Ông đã phát triển thuyết tương đối và cũng đóng góp vào sự phát triển của cơ học lượng tử."
                 },
                 "output": {
                     "claims": [
-                        "Albert Einstein was a German theoretical physicist.",
-                        "Albert Einstein developed the theory of relativity.",
+                        "Albert Einstein là một nhà vật lý lý thuyết người Đức.",
+                        "Albert Einstein đã phát triển thuyết tương đối.",
                     ]
                 },
             },
@@ -95,26 +95,26 @@ def claim_decomposition_prompt(
         examples = [
             {
                 "input": {
-                    "response": "Charles Babbage was a French mathematician, philosopher, and food critic."
+                    "response": "Charles Babbage là một nhà toán học, nhà triết học và nhà phê bình ẩm thực người Pháp."
                 },
                 "output": {
                     "claims": [
-                        "Charles Babbage was a mathematician.",
-                        "Charles Babbage was a philosopher.",
-                        "Charles Babbage was a food critic.",
-                        "Charles Babbage was French.",
+                        "Charles Babbage là một nhà toán học.",
+                        "Charles Babbage là một nhà triết học.",
+                        "Charles Babbage là một nhà phê bình ẩm thực.",
+                        "Charles Babbage là người Pháp.",
                     ]
                 },
             },
             {
                 "input": {
-                    "response": "Albert Einstein was a German theoretical physicist. He developed the theory of relativity and also contributed to the development of quantum mechanics."
+                    "response": "Albert Einstein là một nhà vật lý lý thuyết người Đức. Ông đã phát triển thuyết tương đối và cũng đóng góp vào sự phát triển của cơ học lượng tử."
                 },
                 "output": {
                     "claims": [
-                        "Albert Einstein was a German theoretical physicist.",
-                        "Albert Einstein developed the theory of relativity.",
-                        "Albert Einstein contributed to the development of quantum mechanics.",
+                        "Albert Einstein là một nhà vật lý lý thuyết người Đức.",
+                        "Albert Einstein đã phát triển thuyết tương đối.",
+                        "Albert Einstein đã đóng góp vào sự phát triển của cơ học lượng tử.",
                     ]
                 },
             },
@@ -123,23 +123,23 @@ def claim_decomposition_prompt(
     # Build examples string
     examples_str = "\n".join(
         [
-            f"""Example {i + 1}
-Input: {json.dumps(ex["input"], indent=4)}
-Output: {json.dumps(ex["output"], indent=4)}"""
+            f"""Ví dụ {i + 1}
+Input: {json.dumps(ex["input"], indent=4, ensure_ascii=False)}
+Output: {json.dumps(ex["output"], indent=4, ensure_ascii=False)}"""
             for i, ex in enumerate(examples)
         ]
     )
 
-    return f"""Decompose and break down each of the input sentences into one or more standalone statements. Each statement should be a standalone claim that can be independently verified.
-Follow the level of atomicity and coverage as shown in the examples.
-Please return the output in a JSON format that complies with the following schema as specified in JSON Schema:
-{{"properties": {{"claims": {{"description": "Decomposed Claims", "items": {{"type": "string"}}, "title": "Claims", "type": "array"}}}}, "required": ["claims"], "title": "ClaimDecompositionOutput", "type": "object"}}Do not use single quotes in your response but double quotes,properly escaped with a backslash.
+    return f"""Hãy phân tích và tách nhỏ từng câu đầu vào thành một hoặc nhiều tuyên bố (claims) độc lập. Mỗi tuyên bố phải là một khẳng định độc lập có thể được kiểm chứng thực tế một cách riêng biệt.
+Hãy tuân thủ mức độ chia nhỏ (atomicity) và mức độ bao phủ dữ liệu (coverage) giống như các ví dụ mẫu được hiển thị dưới đây.
+Vui lòng trả về kết quả dưới dạng định dạng JSON tuân thủ chính xác theo cấu trúc (schema) được chỉ định trong JSON Schema sau:
+{{"properties": {{"claims": {{"description": "Decomposed Claims", "items": {{"type": "string"}}, "title": "Claims", "type": "array"}}}}, "required": ["claims"], "title": "ClaimDecompositionOutput", "type": "object"}}Không sử dụng dấu nháy đơn trong phản hồi của bạn, thay vào đó hãy sử dụng dấu nháy kép và được escape đúng cách bằng dấu gạch chéo ngược (\\").
 
---------EXAMPLES-----------
+--------VÍ DỤ-----------
 {examples_str}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {{
     "response": {safe_response}
 }}

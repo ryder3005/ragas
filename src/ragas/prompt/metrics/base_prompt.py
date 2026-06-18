@@ -115,13 +115,13 @@ class BasePrompt(ABC, t.Generic[InputModel, OutputModel]):
 
         # Build complete prompt (matches existing function format)
         return f"""{self.instruction}
-Please return the output in a JSON format that complies with the following schema as specified in JSON Schema:
-{output_schema}Do not use single quotes in your response but double quotes,properly escaped with a backslash.
+Vui lòng trả về kết quả dưới dạng định dạng JSON tuân thủ chính xác theo cấu trúc (schema) được chỉ định trong JSON Schema sau:
+{output_schema}Không sử dụng dấu nháy đơn trong phản hồi của bạn, thay vào đó hãy sử dụng dấu nháy kép và được escape đúng cách bằng dấu gạch chéo ngược (\\").
 
 {examples_str}
 -----------------------------
 
-Now perform the same with the following input
+Bây giờ hãy thực hiện công việc tương tự với đầu vào sau đây
 input: {input_json}
 Output: """
 
@@ -138,12 +138,12 @@ Output: """
         example_strings = []
         for idx, (input_data, output_data) in enumerate(self.examples):
             example_strings.append(
-                f"Example {idx + 1}\n"
+                f"Ví dụ {idx + 1}\n"
                 f"Input: {input_data.model_dump_json(indent=4)}\n"
                 f"Output: {output_data.model_dump_json(indent=4)}"
             )
 
-        return "--------EXAMPLES-----------\n" + "\n\n".join(example_strings)
+        return "--------VÍ DỤ-----------\n" + "\n\n".join(example_strings)
 
     async def adapt(
         self,
@@ -163,7 +163,10 @@ Output: """
             New prompt instance adapted to the target language
         """
         strings = get_all_strings(self.examples)
-
+        print(f"Adapting prompt from {self.language} to {target_language}. "
+                     f"Translating {len(strings)} strings from examples. Adapt instruction: {adapt_instruction}")
+        for s in strings:
+            print(f"String to translate: {s}")
         if not strings:
             new_prompt = copy.deepcopy(self)
             new_prompt.language = target_language
