@@ -70,7 +70,7 @@ def extract_json(text: str) -> str:
     """Identify json from a text blob by matching '[]' or '{}'.
 
     Warning: This will identify the first json structure!"""
-
+    print("extract_json: ", text)
     # check for markdown indicator; if present, start there
     md_json_idx = text.find("```json")
     if md_json_idx != -1:
@@ -85,6 +85,7 @@ def extract_json(text: str) -> str:
 
     # If no delimiter found, return the original text
     if start_idx is None:
+        print("extract_json: No JSON found", text)
         return text
 
     # Identify the exterior delimiters defining JSON
@@ -101,6 +102,8 @@ def extract_json(text: str) -> str:
 
         # When count returns to zero, we've found a complete structure
         if count == 0:
+            print("extract_json: Found JSON", text[start_idx : i + 1])
             return text[start_idx : i + 1]
 
+    print("extract_json: No complete JSON structure found", text)
     return text  # In case of unbalanced JSON, return the original text
