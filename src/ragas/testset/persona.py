@@ -29,20 +29,20 @@ class Persona(BaseModel):
 
 class PersonaGenerationPrompt(PydanticPrompt[StringIO, Persona]):
     instruction: str = (
-        "Using the provided summary, generate a single persona who would likely "
-        "interact with or benefit from the content. Include a unique name and a "
-        "concise role description of who they are."
+        "Dựa trên bản tóm tắt được cung cấp, hãy tạo ra một chân dung người dùng (persona) "
+        "có khả năng cao sẽ tương tác hoặc hưởng lợi từ nội dung này. Bao gồm một tên gọi độc đáo "
+        "và một mô tả ngắn gọn về vai trò, danh tính của họ."
     )
     input_model: t.Type[StringIO] = StringIO
     output_model: t.Type[Persona] = Persona
     examples: t.List[t.Tuple[StringIO, Persona]] = [
         (
             StringIO(
-                text="Guide to Digital Marketing explains strategies for engaging audiences across various online platforms."
+                text="Hướng dẫn Tiếp thị Kỹ thuật số giải thích các chiến lược thu hút khán giả trên nhiều nền tảng trực tuyến khác nhau."
             ),
             Persona(
-                name="Digital Marketing Specialist",
-                role_description="Focuses on engaging audiences and growing the brand online.",
+                name="Chuyên viên Tiếp thị Kỹ thuật số",
+                role_description="Tập trung vào việc thu hút khán giả và phát triển thương hiệu trên môi trường trực tuyến.",
             ),
         )
     ]
@@ -55,7 +55,7 @@ class PersonaList(BaseModel):
         for persona in self.personas:
             if persona.name == key:
                 return persona
-        raise KeyError(f"No persona found with name '{key}'")
+        raise KeyError(f"Không tìm thấy chân dung người dùng (persona) nào có tên '{key}'")
 
 
 def generate_personas_from_kg(
@@ -67,32 +67,32 @@ def generate_personas_from_kg(
     callbacks: Callbacks = [],
 ) -> t.List[Persona]:
     """
-    Generate personas from a knowledge graph based on cluster of similar document summaries.
+    Tạo các chân dung người dùng (personas) từ một đồ thị tri thức (knowledge graph)
+    dựa trên việc gom cụm các bản tóm tắt tài liệu tương đồng.
 
-    parameters:
+    Tham số:
         kg: KnowledgeGraph
-            The knowledge graph to generate personas from.
+            Đồ thị tri thức dùng để tạo personas.
         llm: BaseRagasLLM
-            The LLM to use for generating the persona.
+            Mô hình ngôn ngữ lớn (LLM) được sử dụng để tạo persona.
         persona_generation_prompt: PersonaGenerationPrompt
-            The prompt to use for generating the persona.
+            Prompt được sử dụng để tạo persona.
         num_personas: int
-            The maximum number of personas to generate.
+            Số lượng personas tối đa cần tạo.
         filter_fn: Callable[[Node], bool]
-            A function to filter nodes in the knowledge graph.
+            Hàm dùng để lọc các node trong đồ thị tri thức.
         callbacks: Callbacks
-            The callbacks to use for the generation process.
+            Các hàm callback sử dụng trong quá trình tạo sinh.
 
-
-    returns:
+    Trả về:
         t.List[Persona]
-            The list of generated personas.
+            Danh sách các chân dung người dùng (personas) đã được tạo.
     """
 
     nodes = [node for node in kg.nodes if filter_fn(node)]
     if len(nodes) == 0:
         raise ValueError(
-            "No nodes that satisfied the given filer. Try changing the filter."
+            "Không có node nào thỏa mãn bộ lọc đã cho. Hãy thử thay đổi filter_fn."
         )
 
     summaries = [node.properties.get("summary") for node in nodes]
@@ -131,7 +131,7 @@ def generate_personas_from_kg(
             np.random.choice(top_summaries, num_personas - len(top_summaries))
         )
 
-    # use run_async_batch to generate personas in parallel
+    # Sử dụng run_async_batch để tạo sinh các persona song song
     kwargs_list = [
         {
             "llm": llm,
@@ -142,7 +142,7 @@ def generate_personas_from_kg(
         for summary in top_summaries[:num_personas]
     ]
     persona_list = run_async_batch(
-        desc="Generating personas",
+        desc="Đang khởi tạo chân dung người dùng (personas)",
         func=persona_generation_prompt.generate,
         kwargs_list=kwargs_list,
     )

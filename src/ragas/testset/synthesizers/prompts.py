@@ -19,30 +19,30 @@ class ThemesPersonasMatchingPrompt(
     PydanticPrompt[ThemesPersonasInput, PersonaThemesMapping]
 ):
     instruction: str = (
-        "Given a list of themes and personas with their roles, "
-        "associate each persona with relevant themes based on their role description."
+        "Dựa trên danh sách các chủ đề (themes) và hình mẫu (personas) cùng với vai trò của họ, "
+        "hãy liên kết mỗi hình mẫu với các chủ đề phù hợp dựa theo mô tả vai trò của họ."
     )
     input_model: t.Type[ThemesPersonasInput] = ThemesPersonasInput
     output_model: t.Type[PersonaThemesMapping] = PersonaThemesMapping
     examples: t.List[t.Tuple[ThemesPersonasInput, PersonaThemesMapping]] = [
         (
             ThemesPersonasInput(
-                themes=["Empathy", "Inclusivity", "Remote work"],
+                themes=["Sự thấu cảm", "Tính toàn diện", "Làm việc từ xa"],
                 personas=[
                     Persona(
-                        name="HR Manager",
-                        role_description="Focuses on inclusivity and employee support.",
+                        name="Quản lý Nhân sự",
+                        role_description="Tập trung vào tính toàn diện và hỗ trợ nhân viên.",
                     ),
                     Persona(
-                        name="Remote Team Lead",
-                        role_description="Manages remote team communication.",
+                        name="Trưởng nhóm Từ xa",
+                        role_description="Quản lý giao tiếp và tương tác trong đội ngũ làm việc từ xa.",
                     ),
                 ],
             ),
             PersonaThemesMapping(
                 mapping={
-                    "HR Manager": ["Inclusivity", "Empathy"],
-                    "Remote Team Lead": ["Remote work", "Empathy"],
+                    "Quản lý Nhân sự": ["Tính toàn diện", "Sự thấu cảm"],
+                    "Trưởng nhóm Từ xa": ["Làm việc từ xa", "Sự thấu cảm"],
                 }
             ),
         )

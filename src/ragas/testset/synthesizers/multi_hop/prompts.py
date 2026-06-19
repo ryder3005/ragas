@@ -8,10 +8,10 @@ from ragas.testset.persona import Persona
 
 class ConceptsList(BaseModel):
     lists_of_concepts: t.List[t.List[str]] = Field(
-        description="A list containing lists of concepts from each node"
+        description="Một danh sách chứa các danh sách khái niệm từ mỗi node"
     )
     max_combinations: int = Field(
-        description="The maximum number of concept combinations to generate", default=5
+        description="Số lượng tổ hợp khái niệm tối đa cần tạo", default=5
     )
 
 
@@ -21,34 +21,34 @@ class ConceptCombinations(BaseModel):
 
 class ConceptCombinationPrompt(PydanticPrompt[ConceptsList, ConceptCombinations]):
     instruction: str = (
-        "Form combinations by pairing concepts from at least two different lists.\n"
-        "**Instructions:**\n"
-        "- Review the concepts from each node.\n"
-        "- Identify concepts that can logically be connected or contrasted.\n"
-        "- Form combinations that involve concepts from different nodes.\n"
-        "- Each combination should include at least one concept from two or more nodes.\n"
-        "- List the combinations clearly and concisely.\n"
-        "- Do not repeat the same combination more than once."
+        "Tạo các tổ hợp bằng cách ghép cặp các khái niệm từ ít nhất hai danh sách khác nhau.\n"
+        "**Hướng dẫn:**\n"
+        "- Xem xét các khái niệm từ mỗi node.\n"
+        "- Xác định các khái niệm có thể kết nối hoặc đối chiếu với nhau một cách logic.\n"
+        "- Tạo các tổ hợp bao gồm các khái niệm thuộc về các node khác nhau.\n"
+        "- Mỗi tổ hợp phải chứa ít nhất một khái niệm từ hai hoặc nhiều node trở lên.\n"
+        "- Liệt kê các tổ hợp một cách rõ ràng và súc tích.\n"
+        "- Không lặp lại cùng một tổ hợp nhiều hơn một lần."
     )
     input_model: t.Type[ConceptsList] = (
-        ConceptsList  # Contains lists of concepts from each node
+        ConceptsList  # Chứa danh sách các khái niệm từ mỗi node
     )
     output_model: t.Type[ConceptCombinations] = (
-        ConceptCombinations  # Contains list of concept combinations
+        ConceptCombinations  # Chứa danh sách các tổ hợp khái niệm được tạo ra
     )
     examples: t.List[t.Tuple[ConceptsList, ConceptCombinations]] = [
         (
             ConceptsList(
                 lists_of_concepts=[
-                    ["Artificial intelligence", "Automation"],  # Concepts from Node 1
-                    ["Healthcare", "Data privacy"],  # Concepts from Node 2
+                    ["Trí tuệ nhân tạo", "Tự động hóa"],  # Khái niệm từ Node 1
+                    ["Y tế", "Bảo mật dữ liệu"],  # Khái niệm từ Node 2
                 ],
                 max_combinations=2,
             ),
             ConceptCombinations(
                 combinations=[
-                    ["Artificial intelligence", "Healthcare"],
-                    ["Automation", "Data privacy"],
+                    ["Trí tuệ nhân tạo", "Y tế"],
+                    ["Tự động hóa", "Bảo mật dữ liệu"],
                 ]
             ),
         )
@@ -73,22 +73,22 @@ class QueryAnswerGenerationPrompt(
     PydanticPrompt[QueryConditions, GeneratedQueryAnswer]
 ):
     instruction: str = (
-        "Generate a multi-hop query and answer based on the specified conditions (persona, themes, style, length) "
-        "and the provided context. The themes represent a set of phrases either extracted or generated from the "
-        "context, which highlight the suitability of the selected context for multi-hop query creation. Ensure the query "
-        "explicitly incorporates these themes."
-        "### Instructions:\n"
-        "1. **Generate a Multi-Hop Query**: Use the provided context segments and themes to form a query that requires combining "
-        "information from multiple segments (e.g., `<1-hop>` and `<2-hop>`). Ensure the query explicitly incorporates one or more "
-        "themes and reflects their relevance to the context.\n"
-        "2. **Generate an Answer**: Use only the content from the provided context to create a detailed and faithful answer to "
-        "the query. Avoid adding information that is not directly present or inferable from the given context.\n"
-        "3. **Multi-Hop Context Tags**:\n"
-        "   - Each context segment is tagged as `<1-hop>`, `<2-hop>`, etc.\n"
-        "   - Ensure the query uses information from at least two segments and connects them meaningfully.\n"
-        "4. **Additional Context** (if provided): If llm_context is provided, use it as guidance for "
-        "what type of question to generate (e.g., comparison questions, cause-effect questions, application-based questions) "
-        "and how to structure the answer accordingly. Still ensure the content comes only from the provided context."
+        "Tạo một câu hỏi suy luận đa bước (multi-hop query) và câu trả lời tương ứng dựa trên các điều kiện được chỉ định "
+        "(hình mẫu/persona, chủ đề, phong cách, độ dài) và ngữ cảnh (context) được cung cấp. Các chủ đề (themes) đại diện cho "
+        "một tập hợp các cụm từ được trích xuất hoặc tạo ra từ ngữ cảnh, nhằm làm nổi bật tính phù hợp của ngữ cảnh đã chọn "
+        "để tạo câu hỏi đa bước. Hãy đảm bảo câu hỏi lồng ghép các chủ đề này một cách rõ ràng.\n"
+        "### Hướng dẫn:\n"
+        "1. **Tạo Câu Hỏi Đa Bước (Multi-Hop Query)**: Sử dụng các đoạn ngữ cảnh và chủ đề được cung cấp để tạo thành một câu hỏi "
+        "đòi hỏi phải kết hợp thông tin từ nhiều đoạn ngữ cảnh khác nhau (ví dụ: `<1-hop>` và `<2-hop>`). Đảm bảo câu hỏi lồng ghép "
+        "rõ ràng một hoặc nhiều chủ đề và phản ánh mối liên quan của chúng với ngữ cảnh.\n"
+        "2. **Tạo Câu Trả Lời**: Chỉ sử dụng nội dung từ ngữ cảnh được cung cấp để tạo ra một câu trả lời chi tiết và trung thực "
+        "cho câu hỏi. Tránh thêm thông tin không xuất hiện trực tiếp hoặc không thể suy luận ra từ ngữ cảnh đã cho.\n"
+        "3. **Thẻ Ngữ Cảnh Đa Bước (Multi-Hop Context Tags)**:\n"
+        "   - Mỗi đoạn ngữ cảnh được gắn thẻ là `<1-hop>`, `<2-hop>`, v.v.\n"
+        "   - Đảm bảo câu hỏi sử dụng thông tin từ ít nhất hai đoạn ngữ cảnh và kết nối chúng một cách có ý nghĩa.\n"
+        "4. **Ngữ Cảnh Bổ Sung** (nếu có): Nếu `llm_context` được cung cấp, hãy sử dụng nó làm định hướng cho loại câu hỏi "
+        "cần tạo (ví dụ: câu hỏi so sánh, câu hỏi nguyên nhân - kết quả, câu hỏi dạng ứng dụng) và cấu trúc câu trả lời "
+        "sao cho phù hợp. Tuy nhiên, vẫn phải đảm bảo nội dung câu trả lời chỉ lấy từ ngữ cảnh được cung cấp."
     )
     input_model: t.Type[QueryConditions] = QueryConditions
     output_model: t.Type[GeneratedQueryAnswer] = GeneratedQueryAnswer
@@ -96,22 +96,22 @@ class QueryAnswerGenerationPrompt(
         (
             QueryConditions(
                 persona=Persona(
-                    name="Historian",
-                    role_description="Focuses on major scientific milestones and their global impact.",
+                    name="Nhà sử học",
+                    role_description="Tập trung vào các cột mốc khoa học lớn và tác động toàn cầu của chúng.",
                 ),
-                themes=["Theory of Relativity", "Experimental Validation"],
-                query_style="Formal",
-                query_length="Medium",
+                themes=["Thuyết tương đối", "Xác thực bằng thực nghiệm"],
+                query_style="Trang trọng",
+                query_length="Vừa phải",
                 context=[
-                    "<1-hop> Albert Einstein developed the theory of relativity, introducing the concept of spacetime.",
-                    "<2-hop> The bending of light by gravity was confirmed during the 1919 solar eclipse, supporting Einstein’s theory.",
+                    "<1-hop> Albert Einstein đã phát triển thuyết tương đối, giới thiệu khái niệm về không-thời gian.",
+                    "<2-hop> Hiện tượng ánh sáng bị bẻ cong bởi trọng lực đã được xác nhận trong cuộc nhật thực năm 1919, ủng hộ lý thuyết của Einstein.",
                 ],
             ),
             GeneratedQueryAnswer(
-                query="How was the experimental validation of the theory of relativity achieved during the 1919 solar eclipse?",
+                query="Việc xác thực bằng thực nghiệm đối với thuyết tương đối đã được thực hiện như thế nào trong cuộc nhật thực năm 1919?",
                 answer=(
-                    "The experimental validation of the theory of relativity was achieved during the 1919 solar eclipse by confirming "
-                    "the bending of light by gravity, which supported Einstein’s concept of spacetime as proposed in the theory."
+                    "Việc xác thực bằng thực nghiệm đối với thuyết tương đối đã được thực hiện trong cuộc nhật thực năm 1919 bằng cách "
+                    "xác nhận hiện tượng ánh sáng bị bẻ cong bởi trọng lực, từ đó ủng hộ khái niệm không-thời gian của Einstein được đề xuất trong lý thuyết."
                 ),
             ),
         ),

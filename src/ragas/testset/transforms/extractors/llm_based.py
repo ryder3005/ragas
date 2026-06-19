@@ -14,16 +14,16 @@ class TextWithExtractionLimit(BaseModel):
 
 
 class SummaryExtractorPrompt(PydanticPrompt[StringIO, StringIO]):
-    instruction: str = "Summarize the given text in less than 10 sentences."
+    instruction: str = "Tóm tắt đoạn văn bản đã cho trong ít hơn 10 câu."
     input_model: t.Type[StringIO] = StringIO
     output_model: t.Type[StringIO] = StringIO
     examples: t.List[t.Tuple[StringIO, StringIO]] = [
         (
             StringIO(
-                text="Artificial intelligence\n\nArtificial intelligence is transforming various industries by automating tasks that previously required human intelligence. From healthcare to finance, AI is being used to analyze vast amounts of data quickly and accurately. This technology is also driving innovations in areas like self-driving cars and personalized recommendations."
+                text="Trí tuệ nhân tạo\n\nTrí tuệ nhân tạo đang biến đổi nhiều ngành công nghiệp khác nhau bằng cách tự động hóa các nhiệm vụ trước đây đòi hỏi trí thông minh của con người. Từ y tế đến tài chính, AI đang được sử dụng để phân tích lượng dữ liệu khổng lồ một cách nhanh chóng và chính xác. Công nghệ này cũng đang thúc đẩy những đổi mới trong các lĩnh vực như xe tự lái và đề xuất cá nhân hóa."
             ),
             StringIO(
-                text="AI is revolutionizing industries by automating tasks, analyzing data, and driving innovations like self-driving cars and personalized recommendations."
+                text="AI đang cách mạng hóa các ngành công nghiệp bằng cách tự động hóa công việc, phân tích dữ liệu và thúc đẩy các đổi mới như xe tự lái và hệ thống gợi ý cá nhân hóa."
             ),
         )
     ]
@@ -34,22 +34,22 @@ class Keyphrases(BaseModel):
 
 
 class KeyphrasesExtractorPrompt(PydanticPrompt[TextWithExtractionLimit, Keyphrases]):
-    instruction: str = "Extract top max_num keyphrases from the given text."
+    instruction: str = "Trích xuất tối đa max_num cụm từ khóa quan trọng từ đoạn văn bản cho trước."
     input_model: t.Type[TextWithExtractionLimit] = TextWithExtractionLimit
     output_model: t.Type[Keyphrases] = Keyphrases
     examples: t.List[t.Tuple[TextWithExtractionLimit, Keyphrases]] = [
         (
             TextWithExtractionLimit(
-                text="Artificial intelligence\n\nArtificial intelligence is transforming various industries by automating tasks that previously required human intelligence. From healthcare to finance, AI is being used to analyze vast amounts of data quickly and accurately. This technology is also driving innovations in areas like self-driving cars and personalized recommendations.",
+                text="Trí tuệ nhân tạo\n\nTrí tuệ nhân tạo đang biến đổi nhiều ngành công nghiệp khác nhau bằng cách tự động hóa các nhiệm vụ trước đây đòi hỏi trí thông minh của con người. Từ y tế đến tài chính, AI đang được sử dụng để phân tích lượng dữ liệu khổng lồ một cách nhanh chóng và chính xác. Công nghệ này cũng đang thúc đẩy những đổi mới trong các lĩnh vực như xe tự lái và đề xuất cá nhân hóa.",
                 max_num=5,
             ),
             Keyphrases(
                 keyphrases=[
-                    "Artificial intelligence",
-                    "automating tasks",
-                    "healthcare",
-                    "self-driving cars",
-                    "personalized recommendations",
+                    "Trí tuệ nhân tạo",
+                    "tự động hóa công việc",
+                    "y tế",
+                    "xe tự lái",
+                    "đề xuất cá nhân hóa",
                 ]
             ),
         )
@@ -57,15 +57,15 @@ class KeyphrasesExtractorPrompt(PydanticPrompt[TextWithExtractionLimit, Keyphras
 
 
 class TitleExtractorPrompt(PydanticPrompt[StringIO, StringIO]):
-    instruction: str = "Extract the title of the given document."
+    instruction: str = "Trích xuất tiêu đề của tài liệu đã cho."
     input_model: t.Type[StringIO] = StringIO
     output_model: t.Type[StringIO] = StringIO
     examples: t.List[t.Tuple[StringIO, StringIO]] = [
         (
             StringIO(
-                text="Deep Learning for Natural Language Processing\n\nAbstract\n\nDeep learning has revolutionized the field of natural language processing (NLP). This paper explores various deep learning models and their applications in NLP tasks such as language translation, sentiment analysis, and text generation. We discuss the advantages and limitations of different models, and provide a comprehensive overview of the current state of the art in NLP."
+                text="Học sâu trong xử lý ngôn ngữ tự nhiên\n\nTóm tắt\n\nHọc sâu đã cách mạng hóa lĩnh vực xử lý ngôn ngữ tự nhiên (NLP). Bài báo này khám phá các mô hình học sâu khác nhau và ứng dụng của chúng trong các tác vụ NLP như dịch thuật ngôn ngữ, phân tích cảm xúc và tạo văn bản. Chúng tôi thảo luận về các ưu điểm và hạn chế của các mô hình khác nhau, đồng thời cung cấp một cái nhìn tổng quan toàn diện về trạng thái phát triển hiện tại trong NLP."
             ),
-            StringIO(text="Deep Learning for Natural Language Processing"),
+            StringIO(text="Học sâu trong xử lý ngôn ngữ tự nhiên"),
         )
     ]
 
@@ -76,8 +76,8 @@ class Headlines(BaseModel):
 
 class HeadlinesExtractorPrompt(PydanticPrompt[TextWithExtractionLimit, Headlines]):
     instruction: str = (
-        "Extract the most important max_num headlines from the given text that can be used to split the text into independent sections."
-        "Focus on Level 2 and Level 3 headings."
+        "Trích xuất tối đa max_num tiêu đề quan trọng nhất từ văn bản đã cho để có thể sử dụng làm ranh giới chia nhỏ văn bản thành các phần độc lập. "
+        "Tập trung vào các tiêu đề Cấp 2 (Level 2) và Cấp 3 (Level 3)."
     )
 
     input_model: t.Type[TextWithExtractionLimit] = TextWithExtractionLimit
@@ -86,37 +86,37 @@ class HeadlinesExtractorPrompt(PydanticPrompt[TextWithExtractionLimit, Headlines
         (
             TextWithExtractionLimit(
                 text="""\
-                Introduction
-                Overview of the topic...
+                Giới thiệu
+                Tổng quan về chủ đề...
 
-                Main Concepts
-                Explanation of core ideas...
+                Các khái niệm chính
+                Giải thích về các ý tưởng cốt lõi...
 
-                Detailed Analysis
-                Techniques and methods for analysis...
+                Phân tích chi tiết
+                Các kỹ thuật và phương pháp phân tích...
 
-                Subsection: Specialized Techniques
-                Further details on specialized techniques...
+                Tiểu mục: Kỹ thuật chuyên sâu
+                Chi tiết hơn về các kỹ thuật chuyên sâu...
 
-                Future Directions
-                Insights into upcoming trends...
+                Hướng đi tương lai
+                Góc nhìn về các xu hướng sắp tới...
 
-                Subsection: Next Steps in Research
-                Discussion of new areas of study...
+                Tiểu mục: Các bước tiếp theo trong nghiên cứu
+                Thảo luận về các lĩnh vực nghiên cứu mới...
 
-                Conclusion
-                Final remarks and summary.
+                Kết luận
+                Nhận xét cuối cùng và tóm tắt.
                 """,
                 max_num=6,
             ),
             Headlines(
                 headlines=[
-                    "Introduction",
-                    "Main Concepts",
-                    "Detailed Analysis",
-                    "Subsection: Specialized Techniques",
-                    "Future Directions",
-                    "Conclusion",
+                    "Giới thiệu",
+                    "Các khái niệm chính",
+                    "Phân tích chi tiết",
+                    "Tiểu mục: Kỹ thuật chuyên sâu",
+                    "Hướng đi tương lai",
+                    "Kết luận",
                 ],
             ),
         ),
@@ -129,16 +129,16 @@ class NEROutput(BaseModel):
 
 class NERPrompt(PydanticPrompt[TextWithExtractionLimit, NEROutput]):
     instruction: str = (
-        "Extract the named entities from the given text, limiting the output to the top entities. "
-        "Ensure the number of entities does not exceed the specified maximum."
+        "Trích xuất các thực thể có tên (Named Entities) từ văn bản được cung cấp, giới hạn kết quả ở những thực thể quan trọng nhất. "
+        "Đảm bảo số lượng thực thể không vượt quá mức tối đa được chỉ định."
     )
     input_model: t.Type[TextWithExtractionLimit] = TextWithExtractionLimit
     output_model: t.Type[NEROutput] = NEROutput
     examples: t.List[t.Tuple[TextWithExtractionLimit, NEROutput]] = [
         (
             TextWithExtractionLimit(
-                text="""Elon Musk, the CEO of Tesla and SpaceX, announced plans to expand operations to new locations in Europe and Asia.
-                This expansion is expected to create thousands of jobs, particularly in cities like Berlin and Shanghai.""",
+                text="""Elon Musk, CEO của Tesla và SpaceX, đã thông báo kế hoạch mở rộng hoạt động sang các địa điểm mới ở Châu Âu và Châu Á.
+                Sự mở rộng này dự kiến sẽ tạo ra hàng ngàn việc làm, đặc biệt là ở các thành phố như Berlin và Thượng Hải.""",
                 max_num=10,
             ),
             NEROutput(
@@ -146,10 +146,10 @@ class NERPrompt(PydanticPrompt[TextWithExtractionLimit, NEROutput]):
                     "Elon Musk",
                     "Tesla",
                     "SpaceX",
-                    "Europe",
-                    "Asia",
+                    "Châu Âu",
+                    "Châu Á",
                     "Berlin",
-                    "Shanghai",
+                    "Thượng Hải",
                 ]
             ),
         ),
@@ -159,14 +159,7 @@ class NERPrompt(PydanticPrompt[TextWithExtractionLimit, NEROutput]):
 @dataclass
 class SummaryExtractor(LLMBasedExtractor):
     """
-    Extracts a summary from the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract.
-    prompt : SummaryExtractorPrompt
-        The prompt used for extraction.
+    Trích xuất tóm tắt từ văn bản cho trước.
     """
 
     property_name: str = "summary"
@@ -184,14 +177,7 @@ class SummaryExtractor(LLMBasedExtractor):
 @dataclass
 class KeyphrasesExtractor(LLMBasedExtractor):
     """
-    Extracts top keyphrases from the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract.
-    prompt : KeyphrasesExtractorPrompt
-        The prompt used for extraction.
+    Trích xuất các cụm từ khóa chính quan trọng từ văn bản cho trước.
     """
 
     property_name: str = "keyphrases"
@@ -215,14 +201,7 @@ class KeyphrasesExtractor(LLMBasedExtractor):
 @dataclass
 class TitleExtractor(LLMBasedExtractor):
     """
-    Extracts the title from the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract.
-    prompt : TitleExtractorPrompt
-        The prompt used for extraction.
+    Trích xuất tiêu đề từ văn bản cho trước.
     """
 
     property_name: str = "title"
@@ -240,14 +219,7 @@ class TitleExtractor(LLMBasedExtractor):
 @dataclass
 class HeadlinesExtractor(LLMBasedExtractor):
     """
-    Extracts the headlines from the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract.
-    prompt : HeadlinesExtractorPrompt
-        The prompt used for extraction.
+    Trích xuất các tiêu đề từ văn bản cho trước.
     """
 
     property_name: str = "headlines"
@@ -272,14 +244,7 @@ class HeadlinesExtractor(LLMBasedExtractor):
 @dataclass
 class NERExtractor(LLMBasedExtractor):
     """
-    Extracts named entities from the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract. Defaults to "entities".
-    prompt : NERPrompt
-        The prompt used for extraction.
+    Trích xuất các thực thể có tên (Named Entities) từ văn bản cho trước.
     """
 
     property_name: str = "entities"
@@ -306,16 +271,16 @@ class TopicDescription(BaseModel):
 
 
 class TopicDescriptionPrompt(PydanticPrompt[StringIO, TopicDescription]):
-    instruction: str = "Provide a concise description of the main topic(s) discussed in the following text."
+    instruction: str = "Cung cấp một mô tả ngắn gọn về (các) chủ đề chính được thảo luận trong đoạn văn bản sau."
     input_model: t.Type[StringIO] = StringIO
     output_model: t.Type[TopicDescription] = TopicDescription
     examples: t.List[t.Tuple[StringIO, TopicDescription]] = [
         (
             StringIO(
-                text="Quantum Computing\n\nQuantum computing leverages the principles of quantum mechanics to perform complex computations more efficiently than classical computers. It has the potential to revolutionize fields like cryptography, material science, and optimization problems by solving tasks that are currently intractable for classical systems."
+                text="Máy tính lượng tử\n\nMáy tính lượng tử tận dụng các nguyên lý của cơ học lượng tử để thực hiện các phép toán phức tạp hiệu quả hơn so với máy tính cổ điển. Nó có tiềm năng cách mạng hóa các lĩnh vực như mật mã học, khoa học vật liệu và các bài toán tối ưu hóa bằng cách giải quyết các nhiệm vụ hiện không thể xử lý được bằng các hệ thống cổ điển."
             ),
             TopicDescription(
-                description="An introduction to quantum computing and its potential to outperform classical computers in complex computations, impacting areas such as cryptography and material science."
+                description="Giới thiệu về máy tính lượng tử và tiềm năng vượt trội của nó so với máy tính cổ điển trong các tính toán phức tạp, gây ảnh hưởng lớn đến các lĩnh vực như mật mã và khoa học vật liệu."
             ),
         )
     ]
@@ -324,14 +289,7 @@ class TopicDescriptionPrompt(PydanticPrompt[StringIO, TopicDescription]):
 @dataclass
 class TopicDescriptionExtractor(LLMBasedExtractor):
     """
-    Extracts a concise description of the main topic(s) discussed in the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract.
-    prompt : TopicDescriptionPrompt
-        The prompt used for extraction.
+    Trích xuất mô tả ngắn gọn về chủ đề chính từ văn bản cho trước.
     """
 
     property_name: str = "topic_description"
@@ -353,23 +311,23 @@ class ThemesAndConcepts(BaseModel):
 class ThemesAndConceptsExtractorPrompt(
     PydanticPrompt[TextWithExtractionLimit, ThemesAndConcepts]
 ):
-    instruction: str = "Extract the main themes and concepts from the given text."
+    instruction: str = "Trích xuất các chủ đề và khái niệm chính từ văn bản cho trước."
     input_model: t.Type[TextWithExtractionLimit] = TextWithExtractionLimit
     output_model: t.Type[ThemesAndConcepts] = ThemesAndConcepts
     examples: t.List[t.Tuple[TextWithExtractionLimit, ThemesAndConcepts]] = [
         (
             TextWithExtractionLimit(
-                text="Artificial intelligence is transforming industries by automating tasks requiring human intelligence. AI analyzes vast data quickly and accurately, driving innovations like self-driving cars and personalized recommendations.",
+                text="Trí tuệ nhân tạo đang biến đổi các ngành công nghiệp bằng cách tự động hóa các công việc đòi hỏi trí thông minh của con người. AI phân tích lượng dữ liệu khổng lồ một cách nhanh chóng và chính xác, thúc đẩy các đổi mới như xe tự lái và hệ thống gợi ý cá nhân hóa.",
                 max_num=10,
             ),
             ThemesAndConcepts(
                 output=[
-                    "Artificial intelligence",
-                    "Automation",
-                    "Data analysis",
-                    "Innovation",
-                    "Self-driving cars",
-                    "Personalized recommendations",
+                    "Trí tuệ nhân tạo",
+                    "Tự động hóa",
+                    "Phân tích dữ liệu",
+                    "Đổi mới sáng tạo",
+                    "Xe tự lái",
+                    "Đề xuất cá nhân hóa",
                 ]
             ),
         )
@@ -379,14 +337,7 @@ class ThemesAndConceptsExtractorPrompt(
 @dataclass
 class ThemesExtractor(LLMBasedExtractor):
     """
-    Extracts themes from the given text.
-
-    Attributes
-    ----------
-    property_name : str
-        The name of the property to extract. Defaults to "themes".
-    prompt : ThemesExtractorPrompt
-        The prompt used for extraction.
+    Trích xuất các chủ đề (themes) từ văn bản cho trước.
     """
 
     property_name: str = "themes"

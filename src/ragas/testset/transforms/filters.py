@@ -13,30 +13,30 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_RUBRICS = {
-    "score1_description": "The page content is irrelevant or does not align with the main themes or topics of the document summary.",
-    "score2_description": "The page content partially aligns with the document summary, but it includes unrelated details or lacks critical information related to the document's main themes.",
-    "score3_description": "The page content generally reflects the document summary but may miss key details or lack depth in addressing the main themes.",
-    "score4_description": "The page content aligns well with the document summary, covering the main themes and topics with minor gaps or minimal unrelated information.",
-    "score5_description": "The page content is highly relevant, accurate, and directly reflects the main themes of the document summary, covering all important details and adding depth to the understanding of the document's topics.",
+    "score1_description": "Nội dung trang hoàn toàn không liên quan hoặc không phù hợp với các chủ đề chính hoặc nội dung của bản tóm tắt tài liệu.",
+    "score2_description": "Nội dung trang chỉ phù hợp một phần với bản tóm tắt tài liệu, chứa các chi tiết không liên quan hoặc thiếu thông tin quan trọng liên quan đến các chủ đề chính của tài liệu.",
+    "score3_description": "Nội dung trang phản ánh khá khái quát bản tóm tắt tài liệu nhưng có thể bỏ sót các chi tiết cốt lõi hoặc thiếu chiều sâu khi giải quyết các chủ đề chính.",
+    "score4_description": "Nội dung trang khớp tốt với bản tóm tắt tài liệu, bao quát được các chủ đề chính với những lỗ hổng không đáng kể hoặc rất ít thông tin ngoài lề.",
+    "score5_description": "Nội dung trang có tính liên quan cao, chính xác và phản ánh trực tiếp các chủ đề cốt lõi của bản tóm tắt tài liệu, bao hàm tất cả các chi tiết quan trọng và giúp hiểu sâu hơn về các chủ đề của tài liệu.",
 }
 
 
 class QuestionPotentialInput(BaseModel):
     document_summary: str = Field(
         ...,
-        description="The summary of the document to provide context for evaluating the node.",
+        description="Bản tóm tắt của tài liệu nhằm cung cấp ngữ cảnh để đánh giá node.",
     )
     node_content: str = Field(
         ...,
-        description="The content of the node to evaluate for question generation potential.",
+        description="Nội dung của node cần đánh giá về tiềm năng tạo câu hỏi.",
     )
-    rubrics: t.Dict[str, str] = Field(..., description="The rubric")
+    rubrics: t.Dict[str, str] = Field(..., description="Bộ tiêu chí chấm điểm (rubric).")
 
 
 class QuestionPotentialOutput(BaseModel):
     score: int = Field(
         ...,
-        description="1 to 5 score",
+        description="Điểm số đánh giá trong khoảng từ 1 đến 5",
     )
 
 
@@ -44,7 +44,7 @@ class QuestionPotentialPrompt(
     PydanticPrompt[QuestionPotentialInput, QuestionPotentialOutput]
 ):
     instruction = (
-        "Given a document summary and node content, score the content of the node in 1 to 5 range."
+        "Dựa trên bản tóm tắt tài liệu và nội dung của node được cung cấp, hãy chấm điểm nội dung của node theo thang điểm từ 1 đến 5 dựa trên bộ tiêu chí (rubrics) đi kèm."
         ""
     )
     input_model = QuestionPotentialInput
@@ -54,7 +54,7 @@ class QuestionPotentialPrompt(
 @dataclass
 class CustomNodeFilter(LLMBasedNodeFilter):
     """
-    returns True if the score is less than min_score
+    Trả về True nếu điểm số đánh giá nhỏ hơn hoặc bằng min_score (để lọc bỏ node yếu).
     """
 
     scoring_prompt: PydanticPrompt = field(default_factory=QuestionPotentialPrompt)
@@ -73,7 +73,7 @@ class CustomNodeFilter(LLMBasedNodeFilter):
 
         if summary == "":
             logger.warning(
-                f"Node {node.id} does not have a summary. Skipping filtering."
+                f"Node {node.id} không có summary (bản tóm tắt). Bỏ qua bước lọc."
             )
             return False
 
@@ -83,4 +83,6 @@ class CustomNodeFilter(LLMBasedNodeFilter):
             rubrics=self.rubrics,
         )
         response = await self.scoring_prompt.generate(data=prompt_input, llm=self.llm)
+        
+        # Giữ nguyên logic lọc node dựa trên min_score
         return response.score <= self.min_score

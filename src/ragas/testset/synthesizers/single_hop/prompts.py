@@ -22,17 +22,17 @@ class GeneratedQueryAnswer(BaseModel):
 
 class QueryAnswerGenerationPrompt(PydanticPrompt[QueryCondition, GeneratedQueryAnswer]):
     instruction: str = (
-        "Generate a single-hop query and answer based on the specified conditions (persona, term, style, length) "
-        "and the provided context. Ensure the answer is entirely faithful to the context, using only the information "
-        "directly from the provided context."
-        "### Instructions:\n"
-        "1. **Generate a Query**: Based on the context, persona, term, style, and length, create a question "
-        "that aligns with the persona's perspective and incorporates the term.\n"
-        "2. **Generate an Answer**: Using only the content from the provided context, construct a detailed answer "
-        "to the query. Do not add any information not included in or inferable from the context.\n"
-        "3. **Additional Context** (if provided): If llm_context is provided, use it as guidance for "
-        "what type of question to generate (e.g., comparison questions, how-to questions, application-based questions) "
-        "and how to structure the answer accordingly. Still ensure the content comes only from the provided context.\n"
+        "Hãy tạo một cặp câu hỏi single-hop (câu hỏi một bước) và câu trả lời dựa trên các điều kiện được chỉ định "
+        "(hình mẫu nhân vật - persona, thuật ngữ - term, phong cách - style, độ dài - length) và ngữ cảnh (context) được cung cấp. "
+        "Đảm bảo câu trả lời hoàn toàn trung thực với ngữ cảnh, chỉ sử dụng thông tin trực tiếp từ ngữ cảnh được cung cấp.\n\n"
+        "### Hướng dẫn chi tiết:\n"
+        "1. **Tạo câu hỏi (Query)**: Dựa trên ngữ cảnh, persona, thuật ngữ, phong cách và độ dài được yêu cầu, hãy tạo một câu hỏi "
+        "phù hợp với góc nhìn của nhân vật đó và có lồng ghép thuật ngữ đã cho.\n"
+        "2. **Tạo câu trả lời (Answer)**: Chỉ sử dụng nội dung từ ngữ cảnh được cung cấp để xây dựng câu trả lời chi tiết cho câu hỏi trên. "
+        "Tuyệt đối không thêm bất kỳ thông tin nào không có sẵn hoặc không thể suy luận trực tiếp từ ngữ cảnh.\n"
+        "3. **Ngữ cảnh bổ sung (nếu có)**: Nếu có `llm_context`, hãy sử dụng nó làm định hướng cho loại câu hỏi cần tạo "
+        "(ví dụ: câu hỏi so sánh, câu hỏi hướng dẫn từng bước, câu hỏi mang tính ứng dụng) và cấu trúc câu trả lời tương ứng. "
+        "Tuy nhiên, vẫn phải đảm bảo toàn bộ nội dung câu trả lời chỉ lấy từ ngữ cảnh (context) gốc.\n"
     )
     input_model: t.Type[QueryCondition] = QueryCondition
     output_model: t.Type[GeneratedQueryAnswer] = GeneratedQueryAnswer
@@ -40,18 +40,18 @@ class QueryAnswerGenerationPrompt(PydanticPrompt[QueryCondition, GeneratedQueryA
         (
             QueryCondition(
                 persona=Persona(
-                    name="Software Engineer",
-                    role_description="Focuses on coding best practices and system design.",
+                    name="Kỹ sư phần mềm",
+                    role_description="Tập trung vào các thực hành lập trình tốt nhất và thiết kế hệ thống.",
                 ),
                 term="microservices",
-                query_style="Formal",
-                query_length="Medium",
-                context="Microservices are an architectural style where applications are structured as a collection of loosely coupled services. "
-                "Each service is fine-grained and focuses on a single functionality.",
+                query_style="Trang trọng",
+                query_length="Vừa phải",
+                context="Microservices (kiến trúc vi dịch vụ) là một phong cách kiến trúc mà trong đó các ứng dụng được cấu trúc thành một tập hợp các dịch vụ lỏng lẻo (loosely coupled). "
+                "Mỗi dịch vụ được chia nhỏ một cách tinh gọn và chỉ tập trung vào một chức năng duy nhất.",
             ),
             GeneratedQueryAnswer(
-                query="What is the purpose of microservices in software architecture?",
-                answer="Microservices are designed to structure applications as a collection of loosely coupled services, each focusing on a single functionality.",
+                query="Mục đích của kiến trúc microservices trong thiết kế phần mềm là gì?",
+                answer="Microservices được thiết kế để cấu trúc ứng dụng thành một tập hợp các dịch vụ liên kết lỏng lẻo, trong đó mỗi dịch vụ chỉ tập trung xử lý một chức năng duy nhất.",
             ),
         ),
     ]
